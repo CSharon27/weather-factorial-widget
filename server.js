@@ -2,21 +2,23 @@ const express = require("express");
 const axios = require("axios");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const path = require("path"); // Import the path module
 
 const app = express();
 const PORT = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, 'public')));
 
-const WEATHER_API_KEY = "f91ae71462cfad9ca077cf8421c9d666";
-//"bd5e378503939ddaee76f12ad7a97608";
+const WEATHER_API_KEY = "f91ae71462cfad9ca077cf8421c9d666";  // Make sure this is correct
 
+// Serve the index.html file on the root route
 app.get("/", (req, res) => {
-    res.sendFile(__dirname + "/public/index.html");
+    res.sendFile(path.join(__dirname, "/public/index.html")); // Fixed the missing closing parenthesis
 });
 
+// Weather API endpoint
 app.get("/api/weather", async (req, res) => {
     const { city } = req.query;
     if (!city) return res.status(400).json({ error: "City name is required" });
@@ -33,6 +35,7 @@ app.get("/api/weather", async (req, res) => {
     }
 });
 
+// Factorial API endpoint
 app.post("/api/factorial", (req, res) => {
     const { num, method } = req.body;
     if (num < 0 || isNaN(num)) return res.status(400).json({ error: "Invalid number" });
@@ -52,6 +55,7 @@ app.post("/api/factorial", (req, res) => {
     res.json({ num, method, result });
 });
 
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
